@@ -74,20 +74,20 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 
 - [ ] T023 [P] [US1] Integration tests for CV CRUD endpoints (GET/POST `/api/cvs`, GET/PATCH/DELETE `/api/cvs/:cvId`, incl. `403`/`404` ownership) — `tests/integration/cvs.spec.ts`
 - [ ] T024 [P] [US1] Integration tests for section endpoints (GET/POST, PATCH/DELETE, reorder; ownership enforcement) — `tests/integration/sections.spec.ts`
-- [ ] T025 [P] [US1] Unit tests for section content validation (each `CVSectionType` shape) — `tests/unit/section-validation.test.ts`
-- [ ] T026 [P] [US1] Unit tests for the 3 template components (render content, omit empty sections per FR-015, Unicode/LTR per FR-017) — `tests/unit/templates.test.tsx`
+- [X] T025 [P] [US1] Unit tests for section content validation (each `CVSectionType` shape) — `tests/unit/section-validation.test.ts`
+- [X] T026 [P] [US1] Unit tests for the 3 template components (render content, omit empty sections per FR-015, Unicode/LTR per FR-017) — `tests/unit/templates.test.tsx`
 - [ ] T027 [P] [US1] E2E test: sign up → build CV across all sections → save → reload → switch template with no content loss — `tests/e2e/build-cv.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T028 [P] [US1] Implement section content validation (discriminated union per content shapes) — `src/lib/validation.ts`
+- [X] T028 [P] [US1] Implement section content validation (discriminated union per content shapes) — `src/lib/validation.ts`
 - [ ] T029 [US1] Implement CV CRUD route handlers (last-write-wins save per clarification) — `src/app/api/cvs/route.ts`, `src/app/api/cvs/[cvId]/route.ts`
 - [ ] T030 [US1] Implement section CRUD route handlers — `src/app/api/cvs/[cvId]/sections/route.ts`, `src/app/api/cvs/[cvId]/sections/[sectionId]/route.ts`
 - [ ] T031 [US1] Implement section reorder route handler (position compaction) — `src/app/api/cvs/[cvId]/sections/order/route.ts`
-- [ ] T032 [P] [US1] Implement template registry (templateId → component map) — `src/components/cv-templates/registry.ts`
-- [ ] T033 [P] [US1] Implement Classic template (omits empty sections, LTR Unicode, natural scroll per FR-004a) — `src/components/cv-templates/classic/index.tsx`
-- [ ] T034 [P] [US1] Implement Modern template — `src/components/cv-templates/modern/index.tsx`
-- [ ] T035 [P] [US1] Implement Minimal template — `src/components/cv-templates/minimal/index.tsx`
+- [X] T032 [P] [US1] Implement template registry (templateId → component map) — `src/components/cv-templates/registry.ts`
+- [X] T033 [P] [US1] Implement Classic template (omits empty sections, LTR Unicode, natural scroll per FR-004a) — `src/components/cv-templates/classic/index.tsx`
+- [X] T034 [P] [US1] Implement Modern template — `src/components/cv-templates/modern/index.tsx`
+- [X] T035 [P] [US1] Implement Minimal template — `src/components/cv-templates/minimal/index.tsx`
 - [ ] T036 [US1] Implement live preview component (renders active template from edit state, <200 ms update) — `src/components/cv-preview/CVPreview.tsx`
 - [ ] T037 [P] [US1] Implement section editor components (contact, summary, experience, education, skills) — `src/components/cv-editor/`
 - [ ] T038 [US1] Implement dashboard page (list + create CVs) — `src/app/(dashboard)/dashboard/page.tsx`
