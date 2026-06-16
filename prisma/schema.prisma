@@ -1,0 +1,124 @@
+// CVivo data model — see specs/001-cvivo-cv-platform/data-model.md
+// PostgreSQL via Supabase. DATABASE_URL is the pooled (PgBouncer) connection;
+// DIRECT_URL is the direct connection used by Prisma Migrate.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+/// A registered person who owns CVs. The id matches Supabase auth.uid() so RLS
+/// policies can join identity to data without a separate lookup.
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  cvs              CV[]
+  slugReservations SlugReservation[]
+  shareLinks       ShareLink[]
+
+  @@map("users")
+}
+
+/// A user's curriculum vitae.
+model CV {
+  id         String       @id @default(uuid()) @db.Uuid
+  userId     String       @map("user_id") @db.Uuid
+  title      String       @default("My CV")
+  templateId String       @default("classic") @map("template_id")
+  visibility CVVisibility @default(PRIVATE)
+  createdAt  DateTime     @default(now()) @map("created_at")
+  updatedAt  DateTime     @updatedAt @map("updated_at")
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sections   CVSection[]
+  shareLinks ShareLink[]
+
+  @@index([userId])
+  @@map("cvs")
+}
+
+/// A typed, ordered block of content within a CV. `content` shape varies by `type`
+/// (validated at the application layer — see src/lib/validation.ts).
+model CVSection {
+  id        String        @id @default(uuid()) @db.Uuid
+  cvId      String        @map("cv_id") @db.Uuid
+  type      CVSectionType
+  title     String
+  content   Json
+  position  Int
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  cv CV @relation(fields: [cvId], references: [id], onDelete: Cascade)
+
+  @@unique([cvId, position])
+  @@index([cvId, position])
+  @@map("cv_sections")
+}
+
+/// Canonical registry of vanity slugs. Persists when a ShareLink is revoked so the
+/// slug stays reserved to its original owner (FR-009a). On account deletion the
+/// userId is set null, permanently retiring the slug.
+model SlugReservation {
+  slug       String   @id
+  userId     String?  @map("user_id") @db.Uuid
+  reservedAt DateTime @default(now()) @map("reserved_at")
+
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  shareLinks ShareLink[]
+
+  @@map("slug_reservations")
+}
+
+/// A single publication event: one CV shared at one slug. At most one ACTIVE link
+/// per slug (enforced by a partial unique index in the RLS/constraints migration).
+model ShareLink {
+  id        String          @id @default(uuid()) @db.Uuid
+  slug      String
+  cvId      String          @map("cv_id") @db.Uuid
+  userId    String          @map("user_id") @db.Uuid
+  status    ShareLinkStatus @default(ACTIVE)
+  createdAt DateTime        @default(now()) @map("created_at")
+  revokedAt DateTime?       @map("revoked_at")
+
+  slugReservation SlugReservation @relation(fields: [slug], references: [slug])
+  cv              CV              @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([slug, status])
+  @@map("share_links")
+}
+
+enum CVVisibility {
+  PRIVATE
+  SHARED
+
+  @@map("cv_visibility")
+}
+
+enum CVSectionType {
+  CONTACT
+  SUMMARY
+  EXPERIENCE
+  EDUCATION
+  SKILLS
+  CUSTOM
+
+  @@map("cv_section_type")
+}
+
+enum ShareLinkStatus {
+  ACTIVE
+  REVOKED
+
+  @@map("share_link_status")
+}

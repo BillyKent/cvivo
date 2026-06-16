@@ -45,20 +45,20 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T009 Define Prisma schema for all entities (User, CV, CVSection, SlugReservation, ShareLink + `CVVisibility`, `CVSectionType`, `ShareLinkStatus` enums) per data-model.md — `prisma/schema.prisma`
+- [X] T009 Define Prisma schema for all entities (User, CV, CVSection, SlugReservation, ShareLink + `CVVisibility`, `CVSectionType`, `ShareLinkStatus` enums) per data-model.md — `prisma/schema.prisma`
 - [ ] T010 Generate and apply initial Prisma migration — `prisma/migrations/`
-- [ ] T011 [P] Create Supabase Row Level Security policy migration (authenticated own-row access; anon read via active share link) per data-model.md RLS table — `prisma/migrations/` (raw SQL)
-- [ ] T012 [P] Create Prisma seed for template reference keys (`classic`, `modern`, `minimal`) — `prisma/seed.ts`
-- [ ] T013 [P] Implement Prisma client singleton — `src/lib/db.ts`
-- [ ] T014 [P] Implement Supabase client helpers (server + browser variants via `@supabase/ssr`) — `src/lib/supabase.ts`
-- [ ] T015 [P] Define shared TypeScript types (`CVData`, `SectionContent` discriminated union, API request/response types) per data-model.md content shapes — `src/types/cv.ts`, `src/types/api.ts`
-- [ ] T016 [P] Implement API response/error helper (snake_case error format per contracts/api.md) — `src/lib/api.ts`
-- [ ] T017 Implement auth middleware (Supabase session refresh + protected-route gating) — `src/middleware.ts`
-- [ ] T018 [P] Create root layout and global providers — `src/app/layout.tsx`
-- [ ] T019 [P] Create shared UI primitives (Button, Input, TextArea, Toast) — `src/components/ui/`
+- [X] T011 [P] Create Supabase Row Level Security policy migration (authenticated own-row access; anon read via active share link) per data-model.md RLS table — `prisma/migrations/` (raw SQL)
+- [X] T012 [P] Create Prisma seed for template reference keys (`classic`, `modern`, `minimal`) — `prisma/seed.ts`
+- [X] T013 [P] Implement Prisma client singleton — `src/lib/db.ts`
+- [X] T014 [P] Implement Supabase client helpers (server + browser variants via `@supabase/ssr`) — `src/lib/supabase.ts`
+- [X] T015 [P] Define shared TypeScript types (`CVData`, `SectionContent` discriminated union, API request/response types) per data-model.md content shapes — `src/types/cv.ts`, `src/types/api.ts`
+- [X] T016 [P] Implement API response/error helper (snake_case error format per contracts/api.md) — `src/lib/api.ts`
+- [X] T017 Implement auth middleware (Supabase session refresh + protected-route gating) — `src/middleware.ts`
+- [X] T018 [P] Create root layout and global providers — `src/app/layout.tsx`
+- [X] T019 [P] Create shared UI primitives (Button, Input, TextArea, Toast) — `src/components/ui/`
 - [ ] T020 [P] Integration tests for auth flow (signup `201`/`409`/`422`, signin `200`/`401`, signout `204`) — `tests/integration/auth.spec.ts`
 - [ ] T021 Implement auth route handlers wrapping Supabase Auth (signup, signin, signout) + OAuth callback — `src/app/api/auth/signup/route.ts`, `src/app/api/auth/signin/route.ts`, `src/app/api/auth/signout/route.ts`, `src/app/api/auth/callback/route.ts`
-- [ ] T022 [P] Build signup and signin pages — `src/app/(auth)/signup/page.tsx`, `src/app/(auth)/signin/page.tsx`
+- [X] T022 [P] Build signup and signin pages — `src/app/(auth)/signup/page.tsx`, `src/app/(auth)/signin/page.tsx`
 
 **Checkpoint**: Foundation ready — authenticated session, database, RLS, and types in place. User story implementation can now begin.
 
