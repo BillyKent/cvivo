@@ -28,14 +28,14 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 
 **Purpose**: Project initialization and tooling
 
-- [ ] T001 Initialize Next.js 14 project (App Router, TypeScript, Node 20) in repository root — `package.json`, `next.config.mjs`, `tsconfig.json`
-- [ ] T002 Install dependencies (`next`, `react`, `@supabase/ssr`, `@supabase/supabase-js`, `prisma`, `@prisma/client`, `puppeteer-core`, `@sparticuz/chromium`, `tailwindcss`, `jest`, `@testing-library/react`, `jest-axe`, `@playwright/test`) — `package.json`
-- [ ] T003 [P] Configure ESLint + Prettier — `.eslintrc.json`, `.prettierrc`
-- [ ] T004 [P] Configure Tailwind CSS v3 — `tailwind.config.ts`, `postcss.config.mjs`, `src/app/globals.css`
-- [ ] T005 [P] Configure Jest + React Testing Library + jest-axe — `jest.config.ts`, `jest.setup.ts`
-- [ ] T006 [P] Configure Playwright (mobile/tablet/desktop projects at 375/768/1280 px) — `playwright.config.ts`
-- [ ] T007 [P] Create environment template and ensure secrets are git-ignored — `.env.example`, `.gitignore`
-- [ ] T008 Create base directory structure — `src/app/`, `src/components/`, `src/lib/`, `src/types/`, `tests/{unit,integration,e2e,accessibility}/`, `prisma/`
+- [X] T001 Initialize Next.js 14 project (App Router, TypeScript, Node 20) in repository root — `package.json`, `next.config.mjs`, `tsconfig.json`
+- [X] T002 Install dependencies (`next`, `react`, `@supabase/ssr`, `@supabase/supabase-js`, `prisma`, `@prisma/client`, `puppeteer-core`, `@sparticuz/chromium`, `tailwindcss`, `jest`, `@testing-library/react`, `jest-axe`, `@playwright/test`) — `package.json`
+- [X] T003 [P] Configure ESLint + Prettier — `.eslintrc.json`, `.prettierrc`
+- [X] T004 [P] Configure Tailwind CSS v3 — `tailwind.config.ts`, `postcss.config.mjs`, `src/app/globals.css`
+- [X] T005 [P] Configure Jest + React Testing Library + jest-axe — `jest.config.ts`, `jest.setup.ts`
+- [X] T006 [P] Configure Playwright (mobile/tablet/desktop projects at 375/768/1280 px) — `playwright.config.ts`
+- [X] T007 [P] Create environment template and ensure secrets are git-ignored — `.env.example`, `.gitignore`
+- [X] T008 Create base directory structure — `src/app/`, `src/components/`, `src/lib/`, `src/types/`, `tests/{unit,integration,e2e,accessibility}/`, `prisma/`
 
 ---
 
