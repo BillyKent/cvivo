@@ -1,0 +1,8 @@
+# Build scripts that pnpm is allowed to run on install (pnpm blocks them by default).
+# Prisma needs its engine build/generate; esbuild and unrs-resolver compile native binaries.
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - prisma
+  - esbuild
+  - unrs-resolver

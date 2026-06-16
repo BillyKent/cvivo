@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+build/
+next-env.d.ts
+
+# Production
+dist/
+
+# Environment (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+
+# Testing
+coverage/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Prisma local databases
+prisma/*.db
+prisma/*.db-journal
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
