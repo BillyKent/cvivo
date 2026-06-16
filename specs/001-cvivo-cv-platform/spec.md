@@ -14,6 +14,20 @@
 
 - Q: What should a shared CV link look like (token vs. vanity slug)? → A: User-chosen vanity
   slug (e.g., `cvivo.com/jane-doe`), drawn from a globally unique namespace with validation.
+- Q: How should the system handle two browser tabs/sessions editing the same CV concurrently?
+  → A: Last-write-wins; the most recent save overwrites earlier saves with no merge or conflict
+  warning.
+- Q: After a share link is revoked, who may reuse its vanity slug? → A: Reserved to the original
+  owner only; no other user may ever claim a previously used slug.
+- Q: What are the vanity slug formatting rules? → A: Lowercase letters, digits, and hyphens only;
+  3–50 characters; no leading or trailing hyphen; reserved-word blocklist (e.g., `admin`, `api`,
+  `login`).
+- Q: How should very long entries render in the on-screen preview (as opposed to export)? → A:
+  Natural scroll; content grows freely with no truncation or auto-shrink. Clean pagination (FR-012)
+  is enforced only at export time.
+- Q: What level of non-Latin script and RTL support is required in v1? → A: Unicode display only —
+  all scripts render correctly but layout direction is always LTR; RTL mirroring is out of scope
+  for v1.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -99,13 +113,20 @@ file visually matches the on-screen CV, paginates cleanly, and contains all cont
 - What happens when a user saves a CV with one or more sections left empty? (Empty optional
   sections are omitted from the rendered CV rather than shown as blank headings.)
 - How does the system handle very long entries (e.g., a job description of several hundred
-  words) so the layout does not break?
+  words) so the layout does not break? (On screen, the preview scrolls naturally with no
+  truncation or auto-shrink; clean pagination is enforced only at export time, per FR-012.)
 - What happens when a user requests a vanity slug that is already taken or improperly formatted?
+  (The request is rejected immediately per FR-008a's validation rules, with a clear explanation
+  of whether it was a taken-slug or invalid-format rejection.)
 - What happens when a visitor opens a share link that has been revoked or never existed?
 - What happens to a revoked slug — can the same owner or a different user reuse it later?
+  (The original owner may reuse it for a future share link; no other user may ever claim it.)
 - How does the system handle a user attempting to access or edit a CV that is not theirs?
-- What happens when two browser tabs edit the same CV concurrently?
+- What happens when two browser tabs edit the same CV concurrently? (Last-write-wins: the most
+  recently saved version overwrites any earlier save; no merge or conflict warning is shown.)
 - How does the rendered CV handle special characters, non-Latin scripts, and right-to-left text?
+  (All text is stored and rendered as Unicode — any script displays correctly; layout direction is
+  always left-to-right in v1. RTL layout mirroring is out of scope.)
 - What happens when a user deletes their account — are their shared links and data removed?
 
 ## Requirements *(mandatory)*
@@ -118,6 +139,9 @@ file visually matches the on-screen CV, paginates cleanly, and contains all cont
   summary, work experience, education, and skills — for the user to populate.
 - **FR-004**: System MUST render a live, professionally formatted preview of the CV that reflects
   the user's content as it is edited.
+- **FR-004a**: The on-screen preview MUST allow content to grow naturally via scrolling, without
+  truncating or auto-shrinking text; pagination constraints (FR-012) apply only to exported
+  output, not to the live preview.
 - **FR-005**: System MUST offer a selection of professional templates and allow the user to switch
   templates without losing entered content.
 - **FR-006**: System MUST persist CV content reliably so that saved CVs are restored exactly on
@@ -127,9 +151,14 @@ file visually matches the on-screen CV, paginates cleanly, and contains all cont
   action, choosing a vanity slug (e.g., `cvivo.com/jane-doe`) that the system validates and
   reserves from a globally unique namespace.
 - **FR-008a**: System MUST reject a vanity slug that is already in use or violates slug formatting
-  rules, and MUST clearly inform the user so they can choose another.
+  rules — lowercase letters, digits, and hyphens only; 3–50 characters; no leading or trailing
+  hyphen; and not a reserved platform word (e.g., `admin`, `api`, `login`) — and MUST clearly
+  inform the user so they can choose another.
 - **FR-009**: Users MUST be able to revoke a previously generated share link at any time, after
   which the link no longer grants access.
+- **FR-009a**: A revoked slug MUST remain permanently reserved to its original owner; no other
+  user MAY claim a slug previously used by a different account. The original owner MAY reuse the
+  slug for a future share link.
 - **FR-010**: System MUST render shared CVs correctly and legibly across mobile, tablet, and
   desktop screen sizes.
 - **FR-011**: Shared CV views MUST meet WCAG 2.1 AA accessibility requirements.
@@ -143,6 +172,8 @@ file visually matches the on-screen CV, paginates cleanly, and contains all cont
   than displaying blank headings.
 - **FR-016**: System MUST provide clear, user-friendly feedback when a visited share link is
   invalid, revoked, or never existed.
+- **FR-017**: The system MUST store and render all user-entered text as valid Unicode, correctly
+  displaying any script or language (e.g., CJK, Cyrillic, Arabic) within a left-to-right layout.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -156,8 +187,8 @@ file visually matches the on-screen CV, paginates cleanly, and contains all cont
   selectable per CV and interchangeable without content loss.
 - **Share Link**: A revocable reference that grants unauthenticated, read-only access to one CV via
   a user-chosen vanity slug; key attributes include the slug (globally unique across the platform),
-  its access state (active/revoked), and the CV it points to. Revoking the link frees its slug from
-  active use.
+  its access state (active/revoked), and the CV it points to. Revoking the link deactivates it; the
+  slug remains permanently reserved to the original owner and cannot be claimed by any other user.
 
 ## Success Criteria *(mandatory)*
 
@@ -195,3 +226,6 @@ file visually matches the on-screen CV, paginates cleanly, and contains all cont
 - Real-time multi-user collaborative editing of a single CV is out of scope for v1.
 - Standard data-protection practices apply to personal data, consistent with the project constitution's
   privacy principle.
+- All user-entered text is stored and rendered as Unicode (any script); v1 templates use a
+  left-to-right layout direction — RTL layout mirroring (e.g., for Arabic or Hebrew) is out of
+  scope for v1.
