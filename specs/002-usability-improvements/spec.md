@@ -12,35 +12,55 @@ can't save. Also the Skills section's comma separation doesn't work — neither 
 space is accepted in the skill input. Do a usability analysis of all screens and identify
 improvements to implement."
 
+## Clarifications
+
+### Session 2026-06-17
+
+- Q: Save model — manual vs automatic, and where does validation happen? → A: Manual save stays.
+  Validation runs on the **client, before** the save request — invalid fields (incomplete required
+  fields, or otherwise malformed) are flagged in place with specific messages and the save is
+  blocked until fixed; no data is sent and no generic post-submit error is shown.
+- Q: When is an Experience/Education entry empty (ignored) vs incomplete (error)? → A: An entry
+  with every field blank is empty and ignored. Once any field is filled, the required fields are —
+  Experience: role, company, start date; Education: institution, degree, start date. End date is
+  optional (or "current"); description and field of study are optional.
+- Q: Which sections can be removed, and what can be added? → A: Contact is fixed (never removable;
+  it heads the CV). Summary, Experience, Education, and Skills can be removed and re-added; the user
+  can also add custom sections (free title + text). Reordering applies to all sections except
+  Contact, which stays first.
+
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Saving never lies, and tells me what needs attention (Priority: P1)
+### User Story 1 - Validation up front, with each field's error marked (Priority: P1)
 
-A job seeker is partway through filling in their CV — they've added a work-experience entry with
-a company name but haven't yet typed the role or start date. They click **Save changes**. Today
-the page reports a vague "Couldn't save — try again" with no hint of what is wrong or where, even
-though it looked like the save was accepted. The user needs their in-progress work to be kept,
-and, in the rare case something truly can't be saved, a clear message pointing at the exact spot.
+A job seeker is filling in their CV and leaves a work-experience entry incomplete (a company name
+but no role or start date). They click **Save changes**. Today the page appears to accept the save
+and only then shows a vague "Couldn't save — try again" with no hint of what is wrong or where. The
+user needs the editor to check the form **before** sending anything, and to mark each problem field
+in place with a clear message, so they know exactly what to fix.
 
-**Why this priority**: Directly reported. It breaks the core "save and return later" promise
-(FR-006 of the platform) and erodes trust — the person can't tell whether their work was saved.
+**Why this priority**: Directly reported. The after-the-fact, non-specific error breaks trust and
+the "save and return later" promise — the person can't tell what is wrong or whether their work was
+saved.
 
-**Independent Test**: Add a half-filled experience entry, save, and confirm the work is preserved
-on reload with no contradictory error; then enter genuinely invalid data and confirm a specific,
-located message appears.
+**Independent Test**: Leave required fields of an entry blank, click save, and confirm the save is
+prevented with each offending field marked inline (before any network request); then complete or
+remove the entry and confirm the save succeeds with a clear confirmation.
 
 **Acceptance Scenarios**:
 
-1. **Given** an in-progress entry with some fields still blank, **When** the user saves, **Then**
-   their work is saved without a blocking error, and the incomplete entry is simply omitted from
-   the rendered CV until it is complete.
-2. **Given** a save that genuinely cannot complete, **When** it fails, **Then** the user sees a
-   specific, plain-language message that names the affected section (and field where applicable),
-   shown next to the relevant control — never a bare generic error.
-3. **Given** a save attempt, **When** it resolves, **Then** the user sees exactly one outcome — a
-   clear "Saved" confirmation **or** a specific error — never both for the same action.
-4. **Given** the user returns later, **When** they reopen the CV, **Then** everything they entered
-   (including partial entries) is restored exactly.
+1. **Given** an entry missing required fields, **When** the user clicks save, **Then** the editor
+   validates on the client first, prevents the save, and marks each invalid field in place with a
+   specific, plain-language message — no data is sent and no generic error appears.
+2. **Given** flagged fields, **When** the user corrects (or removes/empties) them, **Then** the
+   messages clear and the save proceeds, ending in a clear "Saved" confirmation.
+3. **Given** a section the user left entirely empty, **When** they save, **Then** it is not treated
+   as an error — it is simply omitted from the rendered CV.
+4. **Given** a save attempt, **When** it resolves, **Then** the user sees exactly one outcome — a
+   clear "Saved" confirmation **or** specific inline field errors — never a success and a failure
+   for the same action.
+5. **Given** the user returns later, **When** they reopen the CV, **Then** everything they saved is
+   restored exactly.
 
 ---
 
@@ -148,25 +168,35 @@ than the two reported defects.
 
 ### Functional Requirements
 
-- **FR-001**: Saving a CV MUST preserve all entered content, including partially completed entries;
-  an incomplete optional entry MUST NOT block the save.
-- **FR-002**: Incomplete or empty entries MUST be omitted from the rendered CV (preview, shared
-  view, export) until they contain enough content to display, consistent with the platform's
-  empty-section rule.
-- **FR-003**: When a save genuinely cannot complete, the system MUST present a specific,
-  plain-language message identifying the affected section (and field where applicable) and MUST
-  surface it near the relevant control rather than as a single generic banner.
-- **FR-004**: A save action MUST resolve to exactly one outcome (success or a specific error) and
-  MUST NOT display a success state and an error for the same action.
+- **FR-001**: The editor MUST validate the CV on the client BEFORE sending any data to save; if any
+  field is invalid, the save MUST be prevented and no save request issued.
+- **FR-001a**: Each invalid field (an incomplete required field, or otherwise malformed input) MUST
+  be marked in place with a specific, plain-language message describing what to fix; errors MUST be
+  shown per field, not as a single generic banner.
+- **FR-002**: A section the user leaves entirely empty MUST NOT be treated as an error; it is
+  omitted from the rendered CV (preview, shared view, export), consistent with the platform's
+  empty-section rule. Validation applies to entries the user has started but not completed, or to
+  malformed input.
+- **FR-002a**: An Experience/Education entry with every field blank MUST be treated as empty and
+  ignored. Once any field is filled, the required fields are — Experience: role, company, start
+  date; Education: institution, degree, start date. End date is optional (or marked "current");
+  description and field of study are optional. Missing required fields on a started entry MUST be
+  flagged per FR-001a.
+- **FR-003**: When a save is blocked by validation, the editor MUST keep the user's input intact
+  and guide them to each offending field; the user resolves it by completing or removing the entry.
+- **FR-004**: A save action MUST resolve to exactly one outcome (a clear "Saved" confirmation or
+  specific inline field errors) and MUST NOT display a success state and an error for the same
+  action.
 - **FR-005**: The skills input MUST accept spaces within a skill and MUST allow the user to add
   multiple skills, each as a distinct, removable item; typing a comma or pressing Enter commits the
   current skill.
 - **FR-006**: The skills input MUST trim surrounding whitespace, ignore empty entries, and avoid
   creating duplicate skills.
-- **FR-007**: Users MUST be able to reorder the sections of a CV from the editor, with the new
-  order reflected in the preview and persisted.
-- **FR-008**: Users MUST be able to remove a non-essential section and add an additional section
-  from the editor.
+- **FR-007**: Users MUST be able to reorder the sections of a CV from the editor (all except
+  Contact, which stays first), with the new order reflected in the preview and persisted.
+- **FR-008**: Users MUST be able to remove and re-add the Summary, Experience, Education, and
+  Skills sections, and add custom sections (free title + text), from the editor. The Contact
+  section MUST NOT be removable.
 - **FR-009**: Users MUST be able to rename a CV and delete a CV (with a confirmation step) from the
   dashboard.
 - **FR-010**: Background actions (save, publish, copy link, export) MUST report their outcome
@@ -206,9 +236,10 @@ CV Section (notably the skills content), and Template entities; section ordering
 
 ## Assumptions
 
-- Saving is **permissive by design**: the platform should never lose a user's in-progress work, so
-  partially completed entries save successfully and are simply not rendered until complete. True
-  validation errors are reserved for genuinely malformed data and are shown inline.
+- Saving stays **manual** (an explicit "Save changes" action). Validation runs **on the client,
+  before** the save request; incomplete required fields or malformed input are flagged in place and
+  block the save until fixed or removed. Entirely empty optional sections are not errors (they are
+  omitted from the CV).
 - The improved skills input uses an "add as you go" model (type a skill, press Enter or comma to
   commit it as a removable item). This is treated as the reasonable default; the comma/space defect
   is fixed regardless of the exact interaction chosen.
