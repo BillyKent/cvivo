@@ -9,6 +9,7 @@ import { Button, CheckIcon, AlertIcon } from '@/components/ui';
 import { isSectionEmpty } from '@/lib/validation';
 import { SectionEditor } from './SectionEditor';
 import { SharePanel } from './SharePanel';
+import { ExportButton } from './ExportButton';
 
 type SaveStatus = 'clean' | 'dirty' | 'saving' | 'saved' | 'error';
 
@@ -147,6 +148,9 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
         <span className="hidden text-sm sm:inline">
           <SaveState status={status} />
         </span>
+        <div className="hidden sm:block">
+          <ExportButton cvId={initialCV.id} onBeforeExport={save} />
+        </div>
         <Button
           variant="secondary"
           onClick={async () => {

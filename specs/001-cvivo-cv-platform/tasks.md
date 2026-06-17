@@ -132,14 +132,14 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 
 ### Tests for User Story 3 (Test-First — write FIRST, ensure they FAIL) ⚠️
 
-- [ ] T051 [P] [US3] Integration test for PDF export endpoint (returns `application/pdf`, attachment headers, all content present) — `tests/integration/export.spec.ts`
-- [ ] T052 [P] [US3] E2E test: export single-page and multi-page CVs → assert clean pagination, no clipped text (SC-004) — `tests/e2e/export-pdf.spec.ts`
+- [X] T051 [P] [US3] Integration test for PDF export endpoint (returns `application/pdf`, attachment headers, all content present) — `tests/integration/export.spec.ts`
+- [X] T052 [P] [US3] E2E test: export single-page and multi-page CVs → assert clean pagination, no clipped text (SC-004) — `tests/e2e/export-pdf.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T053 [US3] Implement Puppeteer PDF helper (`@sparticuz/chromium`, renders the same template HTML, A4 + `printBackground`, clean pagination per FR-012) — `src/lib/pdf.ts`
-- [ ] T054 [US3] Implement export route handler (POST `/api/cvs/:cvId/export/pdf`, `503 pdf_generation_failed` on error) — `src/app/api/cvs/[cvId]/export/pdf/route.ts`
-- [ ] T055 [US3] Implement export button in editor — `src/components/cv-editor/ExportButton.tsx`
+- [X] T053 [US3] Implement Puppeteer PDF helper (`@sparticuz/chromium`, renders the same template HTML, A4 + `printBackground`, clean pagination per FR-012) — `src/lib/pdf.ts`
+- [X] T054 [US3] Implement export route handler (POST `/api/cvs/:cvId/export/pdf`, `503 pdf_generation_failed` on error) — `src/app/api/cvs/[cvId]/export/pdf/route.ts`
+- [X] T055 [US3] Implement export button in editor — `src/components/cv-editor/ExportButton.tsx`
 
 **Checkpoint**: All three user stories are independently functional.
 
