@@ -6,12 +6,17 @@ import type { CVData, CVSectionData, TemplateId } from '@/types/cv';
 import { templateMeta } from '@/components/cv-templates/registry';
 import { CVPreview } from '@/components/cv-preview/CVPreview';
 import { Button, CheckIcon, AlertIcon } from '@/components/ui';
-import { isSectionEmpty } from '@/lib/validation';
+import {
+  isSectionEmpty,
+  validateCVForSave,
+  pruneEmptyEntries,
+  type SectionErrors,
+} from '@/lib/validation';
 import { SectionEditor } from './SectionEditor';
 import { SharePanel } from './SharePanel';
 import { ExportButton } from './ExportButton';
 
-type SaveStatus = 'clean' | 'dirty' | 'saving' | 'saved' | 'error';
+type SaveStatus = 'clean' | 'dirty' | 'saving' | 'saved' | 'error' | 'invalid';
 
 function SaveState({ status }: { status: SaveStatus }) {
   switch (status) {
@@ -27,6 +32,12 @@ function SaveState({ status }: { status: SaveStatus }) {
       return (
         <span className="flex items-center gap-1 text-clay">
           <AlertIcon className="text-[13px]" /> Couldn’t save
+        </span>
+      );
+    case 'invalid':
+      return (
+        <span className="flex items-center gap-1 text-clay">
+          <AlertIcon className="text-[13px]" /> Fix the highlighted fields
         </span>
       );
     case 'dirty':
@@ -72,6 +83,7 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
   const [templateId, setTemplateId] = useState<TemplateId>(initialCV.templateId);
   const [sections, setSections] = useState<CVSectionData[]>(initialCV.sections);
   const [status, setStatus] = useState<SaveStatus>('clean');
+  const [errors, setErrors] = useState<SectionErrors>({});
   const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit');
   const [shareOpen, setShareOpen] = useState(false);
 
@@ -85,12 +97,29 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
     setSections((prev) =>
       prev.map((s) => (s.id === id ? ({ ...s, content } as CVSectionData) : s)),
     );
+    // Clear this section's validation errors as the user edits it.
+    setErrors((prev) => {
+      if (!prev[id]) return prev;
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
     touch();
   }
 
-  async function save() {
+  /** Validate on the client first (US1); only then persist. Returns whether the save succeeded. */
+  async function save(): Promise<boolean> {
+    const validation = validateCVForSave(cv);
+    if (!validation.ok) {
+      setErrors(validation.errors);
+      setStatus('invalid');
+      setMobileView('edit'); // make the flagged fields visible on mobile
+      return false;
+    }
+    setErrors({});
     setStatus('saving');
     try {
+      const cleaned = pruneEmptyEntries(cv);
       const meta = await fetch(`/api/cvs/${initialCV.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -99,7 +128,7 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
       if (!meta.ok) throw new Error('meta');
 
       const results = await Promise.all(
-        sections.map((s) =>
+        cleaned.sections.map((s) =>
           fetch(`/api/cvs/${initialCV.id}/sections/${s.id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
@@ -108,9 +137,12 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
         ),
       );
       if (results.some((r) => !r.ok)) throw new Error('section');
+      setSections(cleaned.sections); // reflect pruned blank entries in the editor
       setStatus('saved');
+      return true;
     } catch {
       setStatus('error');
+      return false;
     }
   }
 
@@ -155,8 +187,7 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
           variant="secondary"
           onClick={async () => {
             // Share what you see: persist the latest edits before opening the panel.
-            await save();
-            setShareOpen(true);
+            if (await save()) setShareOpen(true);
           }}
           className="shrink-0"
         >
@@ -227,6 +258,7 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
                     </header>
                     <SectionEditor
                       section={section}
+                      errors={errors[section.id]}
                       onChange={(content) => updateSection(section.id, content)}
                     />
                   </section>

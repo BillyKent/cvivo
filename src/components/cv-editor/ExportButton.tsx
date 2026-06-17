@@ -9,14 +9,17 @@ export function ExportButton({
   onBeforeExport,
 }: {
   cvId: string;
-  onBeforeExport?: () => Promise<void>;
+  onBeforeExport?: () => Promise<boolean>;
 }) {
   const [busy, setBusy] = useState(false);
 
   async function exportPdf() {
     setBusy(true);
     try {
-      await onBeforeExport?.();
+      if (onBeforeExport) {
+        const ok = await onBeforeExport();
+        if (!ok) return; // save was blocked (e.g. validation) — don't export
+      }
       const res = await fetch(`/api/cvs/${cvId}/export/pdf`, { method: 'POST' });
       if (!res.ok) throw new Error('export failed');
 

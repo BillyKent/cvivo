@@ -1,6 +1,7 @@
 'use client';
 
 import { Button, InputField, TextareaField } from '@/components/ui';
+import type { FieldError } from '@/lib/validation';
 import type { ExperienceContent, ExperienceEntry } from '@/types/cv';
 
 const EMPTY: ExperienceEntry = {
@@ -14,24 +15,28 @@ const EMPTY: ExperienceEntry = {
 
 export function ExperienceEditor({
   content,
+  errors,
   onChange,
 }: {
   content: ExperienceContent;
+  errors?: FieldError[];
   onChange: (content: ExperienceContent) => void;
 }) {
   const entries = content.entries ?? [];
+  const errorFor = (i: number, field: string) =>
+    errors?.find((e) => e.path === `entries.${i}.${field}`)?.message;
   const update = (i: number, patch: Partial<ExperienceEntry>) =>
     onChange({ entries: entries.map((e, idx) => (idx === i ? { ...e, ...patch } : e)) });
 
   return (
     <div className="space-y-4">
       {entries.map((entry, i) => (
-        <fieldset key={i} className="space-y-2 rounded-md border border-gray-200 p-3">
+        <fieldset key={i} className="space-y-2 rounded-md border border-line p-3">
           <legend className="px-1 text-sm font-medium">Experience {i + 1}</legend>
           <div className="grid gap-2 sm:grid-cols-2">
-            <InputField label="Role" value={entry.role} onChange={(e) => update(i, { role: e.target.value })} />
-            <InputField label="Company" value={entry.company} onChange={(e) => update(i, { company: e.target.value })} />
-            <InputField label="Start date" placeholder="YYYY-MM" value={entry.startDate} onChange={(e) => update(i, { startDate: e.target.value })} />
+            <InputField label="Role" error={errorFor(i, 'role')} value={entry.role} onChange={(e) => update(i, { role: e.target.value })} />
+            <InputField label="Company" error={errorFor(i, 'company')} value={entry.company} onChange={(e) => update(i, { company: e.target.value })} />
+            <InputField label="Start date" placeholder="YYYY-MM" error={errorFor(i, 'startDate')} value={entry.startDate} onChange={(e) => update(i, { startDate: e.target.value })} />
             <InputField label="End date" placeholder="YYYY-MM" value={entry.endDate ?? ''} disabled={entry.current} onChange={(e) => update(i, { endDate: e.target.value })} />
           </div>
           <label className="flex items-center gap-2 text-sm">

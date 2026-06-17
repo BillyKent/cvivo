@@ -21,7 +21,7 @@ description: "Task list for CV Editor & App Usability Improvements"
 
 ## Phase 1: Setup
 
-- [ ] T001 Run the existing Jest and Playwright suites to confirm a green regression baseline before any change — `pnpm test` and `pnpm exec playwright test --project=desktop`
+- [X] T001 Run the existing Jest and Playwright suites to confirm a green regression baseline before any change — `pnpm test` and `pnpm exec playwright test --project=desktop`
 
 ---
 
@@ -43,16 +43,16 @@ description: "Task list for CV Editor & App Usability Improvements"
 
 ### Tests for User Story 1 (write first, must fail) ⚠️
 
-- [ ] T003 [P] [US1] Unit tests for `validateCVForSave` — all-blank entry ignored; started entry requires the fields in FR-002a; returns per-field error paths — `tests/unit/cv-validation.test.ts`
-- [ ] T004 [P] [US1] E2E: save blocked with per-field markers and no network request, then succeeds after fixing/removing the entry — `tests/e2e/save-validation.spec.ts`
+- [X] T003 [P] [US1] Unit tests for `validateCVForSave` — all-blank entry ignored; started entry requires the fields in FR-002a; returns per-field error paths — `tests/unit/cv-validation.test.ts`
+- [X] T004 [P] [US1] E2E: save blocked with per-field markers and no network request, then succeeds after fixing/removing the entry — `tests/e2e/save-validation.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T005 [US1] Implement `validateCVForSave(cv)` in `src/lib/validation.ts` (reuse existing Zod schemas; drop all-blank entries; required fields per FR-002a; return `{ ok, errors }` keyed by section id → field path)
-- [ ] T006 [US1] In `src/components/cv-editor/CVEditor.tsx`: run `validateCVForSave` before saving; if invalid, abort with no request and set per-field error state; strip all-blank entries before persisting; keep a single save outcome (Saved **or** errors, never both)
-- [ ] T007 [US1] Thread per-field errors from CVEditor through `src/components/cv-editor/SectionEditor.tsx` to each field editor; clear a field's error as the user edits it
-- [ ] T008 [P] [US1] Show per-field errors for role/company/start date in `src/components/cv-editor/editors/ExperienceEditor.tsx`
-- [ ] T009 [P] [US1] Show per-field errors for institution/degree/start date in `src/components/cv-editor/editors/EducationEditor.tsx`
+- [X] T005 [US1] Implement `validateCVForSave(cv)` in `src/lib/validation.ts` (reuse existing Zod schemas; drop all-blank entries; required fields per FR-002a; return `{ ok, errors }` keyed by section id → field path)
+- [X] T006 [US1] In `src/components/cv-editor/CVEditor.tsx`: run `validateCVForSave` before saving; if invalid, abort with no request and set per-field error state; strip all-blank entries before persisting; keep a single save outcome (Saved **or** errors, never both)
+- [X] T007 [US1] Thread per-field errors from CVEditor through `src/components/cv-editor/SectionEditor.tsx` to each field editor; clear a field's error as the user edits it
+- [X] T008 [P] [US1] Show per-field errors for role/company/start date in `src/components/cv-editor/editors/ExperienceEditor.tsx`
+- [X] T009 [P] [US1] Show per-field errors for institution/degree/start date in `src/components/cv-editor/editors/EducationEditor.tsx`
 
 **Checkpoint**: Saving an incomplete CV is blocked client-side with clear, located messages — the reported defect is fixed.
 
@@ -66,12 +66,12 @@ description: "Task list for CV Editor & App Usability Improvements"
 
 ### Tests for User Story 2 (write first, must fail) ⚠️
 
-- [ ] T010 [P] [US2] Unit/component tests for the skills chip input — space preserved within a skill, Enter and comma commit, surrounding whitespace trimmed, empty ignored, duplicates removed — `tests/unit/skills-input.test.tsx`
-- [ ] T011 [P] [US2] E2E: add a multi-word skill and a comma-committed skill, remove one, and verify they render in the preview — `tests/e2e/skills.spec.ts`
+- [X] T010 [P] [US2] Unit/component tests for the skills chip input — space preserved within a skill, Enter and comma commit, surrounding whitespace trimmed, empty ignored, duplicates removed — `tests/unit/skills-input.test.tsx`
+- [X] T011 [P] [US2] E2E: add a multi-word skill and a comma-committed skill, remove one, and verify they render in the preview — `tests/e2e/skills.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Rewrite `src/components/cv-editor/editors/SkillsEditor.tsx` as a chip/tag input (type → Enter/comma commits a removable chip; × button and Backspace-on-empty remove; trim + dedup), keeping the `{ groups: [{ label?, skills[] }] }` content shape
+- [X] T012 [US2] Rewrite `src/components/cv-editor/editors/SkillsEditor.tsx` as a chip/tag input (type → Enter/comma commits a removable chip; × button and Backspace-on-empty remove; trim + dedup), keeping the `{ groups: [{ label?, skills[] }] }` content shape
 
 **Checkpoint**: The Skills section is usable; the reported defect is fixed.
 

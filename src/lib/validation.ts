@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { CVSectionType } from '@/types/cv';
+import type { CVData, CVSectionData, CVSectionType } from '@/types/cv';
 
 export const SECTION_TYPES = [
   'CONTACT',
@@ -124,3 +124,84 @@ export function isSectionEmpty(type: CVSectionType, content: unknown): boolean {
     }
   }
 }
+
+// --- Save-time validation (US1) ---------------------------------------------------------
+
+export interface FieldError {
+  /** e.g. "fullName" or "entries.0.role" */
+  path: string;
+  message: string;
+}
+export type SectionErrors = Record<string /* sectionId */, FieldError[]>;
+export interface CVValidation {
+  ok: boolean;
+  errors: SectionErrors;
+}
+
+function entryAllBlank(entry: Record<string, unknown>): boolean {
+  return Object.values(entry).every((v) => typeof v === 'boolean' || isBlank(v));
+}
+
+const FIELD_LABELS: Record<string, string> = {
+  role: 'role',
+  company: 'company',
+  startDate: 'start date',
+  institution: 'institution',
+  degree: 'degree',
+};
+
+/**
+ * Validate a CV before saving (FR-001/001a/002a). Entirely blank entries/sections are ignored;
+ * a started Experience/Education entry must have its required fields; Contact needs a name once
+ * any contact detail is present. Returns per-field error paths for the editor to mark.
+ */
+export function validateCVForSave(cv: CVData): CVValidation {
+  const errors: SectionErrors = {};
+
+  for (const section of cv.sections) {
+    const fieldErrors: FieldError[] = [];
+    const content = (section.content ?? {}) as unknown as Record<string, unknown>;
+
+    if (section.type === 'CONTACT') {
+      if (!isSectionEmpty('CONTACT', content) && isBlank(content.fullName)) {
+        fieldErrors.push({ path: 'fullName', message: 'Add your name.' });
+      }
+    } else if (section.type === 'EXPERIENCE' || section.type === 'EDUCATION') {
+      const required =
+        section.type === 'EXPERIENCE'
+          ? ['role', 'company', 'startDate']
+          : ['institution', 'degree', 'startDate'];
+      const entries = Array.isArray(content.entries) ? content.entries : [];
+      entries.forEach((entry, i) => {
+        const e = entry as Record<string, unknown>;
+        if (entryAllBlank(e)) return;
+        for (const field of required) {
+          if (isBlank(e[field])) {
+            fieldErrors.push({ path: `entries.${i}.${field}`, message: `Add the ${FIELD_LABELS[field]}.` });
+          }
+        }
+      });
+    }
+
+    if (fieldErrors.length) errors[section.id] = fieldErrors;
+  }
+
+  return { ok: Object.keys(errors).length === 0, errors };
+}
+
+/** Drop entirely-blank Experience/Education entries before persisting (FR-001/FR-002). */
+export function pruneEmptyEntries(cv: CVData): CVData {
+  return {
+    ...cv,
+    sections: cv.sections.map((s) => {
+      if (s.type === 'EXPERIENCE' || s.type === 'EDUCATION') {
+        const entries = (
+          (s.content as unknown as { entries?: Record<string, unknown>[] }).entries ?? []
+        ).filter((e) => !entryAllBlank(e));
+        return { ...s, content: { ...s.content, entries } } as unknown as CVSectionData;
+      }
+      return s;
+    }),
+  };
+}
+
