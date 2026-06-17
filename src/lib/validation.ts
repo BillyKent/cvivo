@@ -1,6 +1,19 @@
 import { z } from 'zod';
 import type { CVSectionType } from '@/types/cv';
 
+export const SECTION_TYPES = [
+  'CONTACT',
+  'SUMMARY',
+  'EXPERIENCE',
+  'EDUCATION',
+  'SKILLS',
+  'CUSTOM',
+] as const satisfies readonly CVSectionType[];
+
+export function isSectionType(value: unknown): value is CVSectionType {
+  return typeof value === 'string' && (SECTION_TYPES as readonly string[]).includes(value);
+}
+
 // Runtime validation for section content. Shapes mirror src/types/cv.ts and
 // specs/001-cvivo-cv-platform/data-model.md. Schemas are lenient on optional fields so
 // in-progress edits validate, but enforce structure (arrays, required keys, types).

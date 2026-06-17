@@ -54,3 +54,20 @@ export class ApiException extends Error {
     return failCode(this.code, this.message);
   }
 }
+
+/**
+ * Wrap an authenticated handler: resolves the user id (401 if absent) and converts any
+ * thrown ApiException into its canonical response. Other errors propagate to Next.
+ */
+export async function withAuth(
+  handler: (userId: string) => Promise<NextResponse>,
+): Promise<NextResponse> {
+  const userId = await getAuthUserId();
+  if (!userId) return failCode('unauthorized', 'Sign in required');
+  try {
+    return await handler(userId);
+  } catch (error) {
+    if (error instanceof ApiException) return error.toResponse();
+    throw error;
+  }
+}
