@@ -112,7 +112,7 @@ description: "Task list for CV Editor & App Usability Improvements"
 ### Implementation for User Story 4
 
 - [ ] T020 [US4] Replace the `alert()` in `src/components/cv-editor/ExportButton.tsx` with a toast error + retry affordance
-- [ ] T021 [US4] Add success toasts for save, publish, and copy-link in `src/components/cv-editor/CVEditor.tsx` and `src/components/cv-editor/SharePanel.tsx`
+- [ ] T021 [US4] Add success toasts for **publish** and **copy-link** in `src/components/cv-editor/SharePanel.tsx`. Do NOT add a toast for save — save keeps its single inline "Saved" indicator (`SaveState`) to avoid a double success signal (analyze D1; honors FR-004)
 - [ ] T022 [US4] Add an unsaved-changes guard in `src/components/cv-editor/CVEditor.tsx` (beforeunload when staged content is dirty + confirm on the in-app "CVs" back link and Sign out)
 
 **Checkpoint**: Feedback is consistent and on-brand; work isn't lost silently.
@@ -126,6 +126,7 @@ description: "Task list for CV Editor & App Usability Improvements"
 - [ ] T025 [P] Plain-language copy pass (FR-014): ensure no internal error codes surface to users and tone is consistent across editor, auth, and share
 - [ ] T026 [P] Accessibility check (jest-axe + keyboard) for the new components — skills chip input, toasts, section manager
 - [ ] T027 Update the existing build-cv E2E if labels/flows changed, then run the full suite green — `pnpm test` and `pnpm exec playwright test --project=desktop`
+- [ ] T028 [P] Handle a missing CV gracefully — when the open CV returns HTTP 404 (e.g. deleted in another tab) during save or a structural op, show a clear in-app message and return to the dashboard rather than a generic error, in `src/components/cv-editor/CVEditor.tsx` (spec edge case; analyze G1). Add an E2E covering it in `tests/e2e/feedback.spec.ts`
 
 ---
 
@@ -164,4 +165,4 @@ description: "Task list for CV Editor & App Usability Improvements"
 - No new dependencies, migrations, or endpoints — reuse feature 001's API (see contracts/changes.md).
 - Structural section ops persist immediately; text content stays staged until the manual Save.
 - Re-baseline visual snapshots (T024) only after the Contact rendering change.
-- 27 tasks: Setup 1, Foundational 1, US1 7, US2 3, US3 6, US4 4, Polish 5.
+- 28 tasks: Setup 1, Foundational 1, US1 7, US2 3, US3 6, US4 4, Polish 6.
