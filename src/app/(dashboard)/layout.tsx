@@ -8,7 +8,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <Link href="/dashboard" className="font-display text-lg font-semibold tracking-tight">
           CVivo
         </Link>
-        <SignOutButton />
+        <nav className="flex items-center gap-1">
+          <Link
+            href="/account"
+            className="rounded-md px-3 py-1.5 text-sm font-medium text-ink-muted transition-colors hover:bg-surface hover:text-ink"
+          >
+            Account
+          </Link>
+          <SignOutButton />
+        </nav>
       </header>
       {children}
     </div>

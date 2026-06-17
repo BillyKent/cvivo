@@ -149,14 +149,14 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 
 **Purpose**: Privacy/account management (FR-014, SC-008) and quality hardening spanning all stories
 
-- [ ] T056 [P] Integration tests for account endpoints (GET profile; DELETE cascades CVs + sections + share links, retires slugs, SC-008 = 100%) — `tests/integration/account.spec.ts`
-- [ ] T057 Implement account endpoints (GET `/api/account`; data export; DELETE with atomic cascade + `SlugReservation.userId` SET NULL per data-model.md) — `src/app/api/account/route.ts`
-- [ ] T058 Implement account settings page (view profile, export personal data, delete account per FR-014) — `src/app/(dashboard)/account/page.tsx`
-- [ ] T059 [P] Performance validation: shared CV page viewable within 3 s on broadband (SC-006) — `tests/e2e/performance.spec.ts`
-- [ ] T060 [P] Add empty-state and loading states across dashboard and editor
-- [ ] T061 Security hardening review (verify RLS coverage on every table, HTTPS enforced, public endpoint leaks no user identity)
-- [ ] T062 [P] Update README with setup steps from quickstart.md — `README.md`
-- [ ] T063 Run quickstart.md validation end-to-end (fresh clone → install → migrate → dev → tests pass)
+- [X] T056 [P] Integration tests for account endpoints (GET profile; DELETE cascades CVs + sections + share links, retires slugs, SC-008 = 100%) — `tests/integration/account.spec.ts`
+- [X] T057 Implement account endpoints (GET `/api/account`; data export; DELETE with atomic cascade + `SlugReservation.userId` SET NULL per data-model.md) — `src/app/api/account/route.ts`
+- [X] T058 Implement account settings page (view profile, export personal data, delete account per FR-014) — `src/app/(dashboard)/account/page.tsx`
+- [X] T059 [P] Performance validation: shared CV page viewable within 3 s on broadband (SC-006) — `tests/e2e/performance.spec.ts`
+- [X] T060 [P] Add empty-state and loading states across dashboard and editor
+- [X] T061 Security hardening review (verify RLS coverage on every table, HTTPS enforced, public endpoint leaks no user identity)
+- [X] T062 [P] Update README with setup steps from quickstart.md — `README.md`
+- [X] T063 Run quickstart.md validation end-to-end (fresh clone → install → migrate → dev → tests pass)
 
 ---
 
