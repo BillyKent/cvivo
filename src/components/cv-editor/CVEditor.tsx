@@ -8,6 +8,7 @@ import { CVPreview } from '@/components/cv-preview/CVPreview';
 import { Button, CheckIcon, AlertIcon } from '@/components/ui';
 import { isSectionEmpty } from '@/lib/validation';
 import { SectionEditor } from './SectionEditor';
+import { SharePanel } from './SharePanel';
 
 type SaveStatus = 'clean' | 'dirty' | 'saving' | 'saved' | 'error';
 
@@ -71,6 +72,7 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
   const [sections, setSections] = useState<CVSectionData[]>(initialCV.sections);
   const [status, setStatus] = useState<SaveStatus>('clean');
   const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit');
+  const [shareOpen, setShareOpen] = useState(false);
 
   const cv: CVData = { ...initialCV, title, templateId, sections };
 
@@ -145,6 +147,17 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
         <span className="hidden text-sm sm:inline">
           <SaveState status={status} />
         </span>
+        <Button
+          variant="secondary"
+          onClick={async () => {
+            // Share what you see: persist the latest edits before opening the panel.
+            await save();
+            setShareOpen(true);
+          }}
+          className="shrink-0"
+        >
+          Share
+        </Button>
         <Button onClick={save} disabled={status === 'saving'} className="shrink-0">
           {status === 'saving' ? 'Saving…' : 'Save changes'}
         </Button>
@@ -226,6 +239,8 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
           <CVPreview cv={cv} />
         </div>
       </div>
+
+      {shareOpen && <SharePanel cvId={initialCV.id} onClose={() => setShareOpen(false)} />}
     </div>
   );
 }

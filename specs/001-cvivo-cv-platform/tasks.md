@@ -105,20 +105,20 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 
 ### Tests for User Story 2 (Test-First — write FIRST, ensure they FAIL) ⚠️
 
-- [ ] T040 [P] [US2] Unit tests for slug validation (format regex, 3–50 length, no leading/trailing hyphen, reserved-word blocklist) per FR-008a — `tests/unit/slug.test.ts`
-- [ ] T041 [P] [US2] Integration tests for share endpoints (POST `201`/`409 slug_taken`/`422 slug_invalid_format`/`slug_reserved_word`; DELETE revoke; FR-009a slug stays reserved to original owner) — `tests/integration/share.spec.ts`
-- [ ] T042 [P] [US2] Integration tests for public endpoint (active `200`; revoked → `404`; nonexistent → `404`; no user identity leaked) — `tests/integration/public.spec.ts`
-- [ ] T043 [P] [US2] Accessibility test: jest-axe WCAG 2.1 AA audit of public CV view, zero critical violations per SC-005 — `tests/accessibility/public-cv.test.tsx`
-- [ ] T044 [P] [US2] E2E responsive test: share → open as anon at 375/768/1280 px → revoke → confirm immediate 404 (SC-007) — `tests/e2e/share-cv.spec.ts`
+- [X] T040 [P] [US2] Unit tests for slug validation (format regex, 3–50 length, no leading/trailing hyphen, reserved-word blocklist) per FR-008a — `tests/unit/slug.test.ts`
+- [X] T041 [P] [US2] Integration tests for share endpoints (POST `201`/`409 slug_taken`/`422 slug_invalid_format`/`slug_reserved_word`; DELETE revoke; FR-009a slug stays reserved to original owner) — `tests/integration/share.spec.ts`
+- [X] T042 [P] [US2] Integration tests for public endpoint (active `200`; revoked → `404`; nonexistent → `404`; no user identity leaked) — `tests/integration/public.spec.ts`
+- [X] T043 [P] [US2] Accessibility test: jest-axe WCAG 2.1 AA audit of public CV view, zero critical violations per SC-005 — `tests/accessibility/public-cv.test.tsx`
+- [X] T044 [P] [US2] E2E responsive test: share → open as anon at 375/768/1280 px → revoke → confirm immediate 404 (SC-007) — `tests/e2e/share-cv.spec.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T045 [P] [US2] Implement slug validation (format regex + reserved-word blocklist) — `src/lib/slug.ts`
-- [ ] T046 [US2] Implement share route handlers (GET/POST/DELETE) with SlugReservation creation, ShareLink lifecycle, CV.visibility sync, FR-009a reservation logic — `src/app/api/cvs/[cvId]/share/route.ts`
-- [ ] T047 [US2] Implement public CV data endpoint (GET `/api/public/:slug`, returns only CV content, `404` on missing/revoked per FR-016) — `src/app/api/public/[slug]/route.ts`
-- [ ] T048 [US2] Implement public CV page (SSR for SC-006, responsive FR-010, reuses template components) — `src/app/[slug]/page.tsx`
-- [ ] T049 [US2] Implement share panel in editor (enable sharing, slug input with inline validation feedback, copy URL, revoke) — `src/components/cv-editor/SharePanel.tsx`
-- [ ] T050 [US2] Implement friendly not-found page for invalid/revoked links (FR-016) — `src/app/[slug]/not-found.tsx`
+- [X] T045 [P] [US2] Implement slug validation (format regex + reserved-word blocklist) — `src/lib/slug.ts`
+- [X] T046 [US2] Implement share route handlers (GET/POST/DELETE) with SlugReservation creation, ShareLink lifecycle, CV.visibility sync, FR-009a reservation logic — `src/app/api/cvs/[cvId]/share/route.ts`
+- [X] T047 [US2] Implement public CV data endpoint (GET `/api/public/:slug`, returns only CV content, `404` on missing/revoked per FR-016) — `src/app/api/public/[slug]/route.ts`
+- [X] T048 [US2] Implement public CV page (SSR for SC-006, responsive FR-010, reuses template components) — `src/app/[slug]/page.tsx`
+- [X] T049 [US2] Implement share panel in editor (enable sharing, slug input with inline validation feedback, copy URL, revoke) — `src/components/cv-editor/SharePanel.tsx`
+- [X] T050 [US2] Implement friendly not-found page for invalid/revoked links (FR-016) — `src/app/[slug]/not-found.tsx`
 
 **Checkpoint**: User Stories 1 AND 2 both work independently.
 
