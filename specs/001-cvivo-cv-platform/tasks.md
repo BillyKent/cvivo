@@ -46,7 +46,7 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
 - [X] T009 Define Prisma schema for all entities (User, CV, CVSection, SlugReservation, ShareLink + `CVVisibility`, `CVSectionType`, `ShareLinkStatus` enums) per data-model.md — `prisma/schema.prisma`
-- [ ] T010 Generate and apply initial Prisma migration — `prisma/migrations/`
+- [X] T010 Generate and apply initial Prisma migration — `prisma/migrations/`
 - [X] T011 [P] Create Supabase Row Level Security policy migration (authenticated own-row access; anon read via active share link) per data-model.md RLS table — `prisma/migrations/` (raw SQL)
 - [X] T012 [P] Create Prisma seed for template reference keys (`classic`, `modern`, `minimal`) — `prisma/seed.ts`
 - [X] T013 [P] Implement Prisma client singleton — `src/lib/db.ts`
@@ -56,8 +56,8 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 - [X] T017 Implement auth middleware (Supabase session refresh + protected-route gating) — `src/middleware.ts`
 - [X] T018 [P] Create root layout and global providers — `src/app/layout.tsx`
 - [X] T019 [P] Create shared UI primitives (Button, Input, TextArea, Toast) — `src/components/ui/`
-- [ ] T020 [P] Integration tests for auth flow (signup `201`/`409`/`422`, signin `200`/`401`, signout `204`) — `tests/integration/auth.spec.ts`
-- [ ] T021 Implement auth route handlers wrapping Supabase Auth (signup, signin, signout) + OAuth callback — `src/app/api/auth/signup/route.ts`, `src/app/api/auth/signin/route.ts`, `src/app/api/auth/signout/route.ts`, `src/app/api/auth/callback/route.ts`
+- [X] T020 [P] Integration tests for auth flow (signup `201`/`409`/`422`, signin `200`/`401`, signout `204`) — `tests/integration/auth.spec.ts`
+- [X] T021 Implement auth route handlers wrapping Supabase Auth (signup, signin, signout) + OAuth callback — `src/app/api/auth/signup/route.ts`, `src/app/api/auth/signin/route.ts`, `src/app/api/auth/signout/route.ts`, `src/app/api/auth/callback/route.ts`
 - [X] T022 [P] Build signup and signin pages — `src/app/(auth)/signup/page.tsx`, `src/app/(auth)/signin/page.tsx`
 
 **Checkpoint**: Foundation ready — authenticated session, database, RLS, and types in place. User story implementation can now begin.
@@ -72,8 +72,8 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 
 ### Tests for User Story 1 (Test-First — write FIRST, ensure they FAIL) ⚠️
 
-- [ ] T023 [P] [US1] Integration tests for CV CRUD endpoints (GET/POST `/api/cvs`, GET/PATCH/DELETE `/api/cvs/:cvId`, incl. `403`/`404` ownership) — `tests/integration/cvs.spec.ts`
-- [ ] T024 [P] [US1] Integration tests for section endpoints (GET/POST, PATCH/DELETE, reorder; ownership enforcement) — `tests/integration/sections.spec.ts`
+- [X] T023 [P] [US1] Integration tests for CV CRUD endpoints (GET/POST `/api/cvs`, GET/PATCH/DELETE `/api/cvs/:cvId`, incl. `403`/`404` ownership) — `tests/integration/cvs.spec.ts`
+- [X] T024 [P] [US1] Integration tests for section endpoints (GET/POST, PATCH/DELETE, reorder; ownership enforcement) — `tests/integration/sections.spec.ts`
 - [X] T025 [P] [US1] Unit tests for section content validation (each `CVSectionType` shape) — `tests/unit/section-validation.test.ts`
 - [X] T026 [P] [US1] Unit tests for the 3 template components (render content, omit empty sections per FR-015, Unicode/LTR per FR-017) — `tests/unit/templates.test.tsx`
 - [ ] T027 [P] [US1] E2E test: sign up → build CV across all sections → save → reload → switch template with no content loss — `tests/e2e/build-cv.spec.ts`
@@ -81,9 +81,9 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 ### Implementation for User Story 1
 
 - [X] T028 [P] [US1] Implement section content validation (discriminated union per content shapes) — `src/lib/validation.ts`
-- [ ] T029 [US1] Implement CV CRUD route handlers (last-write-wins save per clarification) — `src/app/api/cvs/route.ts`, `src/app/api/cvs/[cvId]/route.ts`
-- [ ] T030 [US1] Implement section CRUD route handlers — `src/app/api/cvs/[cvId]/sections/route.ts`, `src/app/api/cvs/[cvId]/sections/[sectionId]/route.ts`
-- [ ] T031 [US1] Implement section reorder route handler (position compaction) — `src/app/api/cvs/[cvId]/sections/order/route.ts`
+- [X] T029 [US1] Implement CV CRUD route handlers (last-write-wins save per clarification) — `src/app/api/cvs/route.ts`, `src/app/api/cvs/[cvId]/route.ts`
+- [X] T030 [US1] Implement section CRUD route handlers — `src/app/api/cvs/[cvId]/sections/route.ts`, `src/app/api/cvs/[cvId]/sections/[sectionId]/route.ts`
+- [X] T031 [US1] Implement section reorder route handler (position compaction) — `src/app/api/cvs/[cvId]/sections/order/route.ts`
 - [X] T032 [P] [US1] Implement template registry (templateId → component map) — `src/components/cv-templates/registry.ts`
 - [X] T033 [P] [US1] Implement Classic template (omits empty sections, LTR Unicode, natural scroll per FR-004a) — `src/components/cv-templates/classic/index.tsx`
 - [X] T034 [P] [US1] Implement Modern template — `src/components/cv-templates/modern/index.tsx`
