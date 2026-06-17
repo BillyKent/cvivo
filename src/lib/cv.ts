@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db';
 import { ApiException } from '@/lib/api';
 import { defaultContentFor } from '@/lib/validation';
 import type { CVDetail, CVSummary, SectionDTO } from '@/types/api';
-import type { CVSectionType, TemplateId } from '@/types/cv';
+import type { CVData, CVSectionData, CVSectionType, TemplateId } from '@/types/cv';
 
 /** Standard sections every new CV starts with (FR-003), in display order. */
 export const STANDARD_SECTIONS: { type: CVSectionType; title: string }[] = [
@@ -35,6 +35,25 @@ export function serializeSection(section: SectionRow): SectionDTO {
     title: section.title,
     content: section.content,
     position: section.position,
+  };
+}
+
+/** Map a loaded CV (Prisma rows) to the typed CVData consumed by templates and the editor. */
+export function toCVData(cv: CVWithSections): CVData {
+  return {
+    id: cv.id,
+    title: cv.title,
+    templateId: cv.templateId as TemplateId,
+    visibility: cv.visibility,
+    sections: [...cv.sections]
+      .sort((a, b) => a.position - b.position)
+      .map((s) => ({
+        id: s.id,
+        type: s.type,
+        title: s.title,
+        position: s.position,
+        content: s.content,
+      })) as unknown as CVSectionData[],
   };
 }
 

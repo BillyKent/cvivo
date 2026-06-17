@@ -76,7 +76,7 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 - [X] T024 [P] [US1] Integration tests for section endpoints (GET/POST, PATCH/DELETE, reorder; ownership enforcement) — `tests/integration/sections.spec.ts`
 - [X] T025 [P] [US1] Unit tests for section content validation (each `CVSectionType` shape) — `tests/unit/section-validation.test.ts`
 - [X] T026 [P] [US1] Unit tests for the 3 template components (render content, omit empty sections per FR-015, Unicode/LTR per FR-017) — `tests/unit/templates.test.tsx`
-- [ ] T027 [P] [US1] E2E test: sign up → build CV across all sections → save → reload → switch template with no content loss — `tests/e2e/build-cv.spec.ts`
+- [X] T027 [P] [US1] E2E test: sign up → build CV across all sections → save → reload → switch template with no content loss — `tests/e2e/build-cv.spec.ts`
 
 ### Implementation for User Story 1
 
@@ -88,10 +88,10 @@ Next.js 14 App Router monolith: `src/app/` (pages + API route handlers), `src/co
 - [X] T033 [P] [US1] Implement Classic template (omits empty sections, LTR Unicode, natural scroll per FR-004a) — `src/components/cv-templates/classic/index.tsx`
 - [X] T034 [P] [US1] Implement Modern template — `src/components/cv-templates/modern/index.tsx`
 - [X] T035 [P] [US1] Implement Minimal template — `src/components/cv-templates/minimal/index.tsx`
-- [ ] T036 [US1] Implement live preview component (renders active template from edit state, <200 ms update) — `src/components/cv-preview/CVPreview.tsx`
-- [ ] T037 [P] [US1] Implement section editor components (contact, summary, experience, education, skills) — `src/components/cv-editor/`
-- [ ] T038 [US1] Implement dashboard page (list + create CVs) — `src/app/(dashboard)/dashboard/page.tsx`
-- [ ] T039 [US1] Implement CV editor page (editor + live preview + template switcher + save) — `src/app/(dashboard)/cv/[cvId]/edit/page.tsx`
+- [X] T036 [US1] Implement live preview component (renders active template from edit state, <200 ms update) — `src/components/cv-preview/CVPreview.tsx`
+- [X] T037 [P] [US1] Implement section editor components (contact, summary, experience, education, skills) — `src/components/cv-editor/`
+- [X] T038 [US1] Implement dashboard page (list + create CVs) — `src/app/(dashboard)/dashboard/page.tsx`
+- [X] T039 [US1] Implement CV editor page (editor + live preview + template switcher + save) — `src/app/(dashboard)/cv/[cvId]/edit/page.tsx`
 
 **Checkpoint**: User Story 1 is fully functional and independently testable — this is the deployable MVP.
 
