@@ -2,14 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+@layer base {
+  body {
+    @apply bg-surface font-sans text-ink antialiased;
+  }
+
+  /* Visible, on-brand keyboard focus everywhere (quality floor). */
+  :focus-visible {
+    outline: none;
+    @apply ring-2 ring-pine ring-offset-2 ring-offset-surface;
+  }
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
+@layer utilities {
+  /* Page-load reveal for editor sections and the sheet. */
+  .animate-rise {
+    animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
 
-body {
-  @apply bg-gray-50 text-gray-900 antialiased;
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* The "living CV" pulse on the live-preview indicator. */
+  .animate-live {
+    animation: live 2.4s ease-in-out infinite;
+  }
+
+  @keyframes live {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-rise,
+    .animate-live {
+      animation: none !important;
+    }
+  }
 }

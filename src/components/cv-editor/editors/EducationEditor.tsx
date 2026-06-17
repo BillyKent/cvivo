@@ -32,8 +32,8 @@ export function EducationEditor({
             <InputField label="Degree" value={entry.degree} onChange={(e) => update(i, { degree: e.target.value })} />
             <InputField label="Field" value={entry.field ?? ''} onChange={(e) => update(i, { field: e.target.value })} />
             <InputField label="Institution" value={entry.institution} onChange={(e) => update(i, { institution: e.target.value })} />
-            <InputField label="Start (YYYY-MM)" value={entry.startDate} onChange={(e) => update(i, { startDate: e.target.value })} />
-            <InputField label="End (YYYY-MM)" value={entry.endDate ?? ''} disabled={entry.current} onChange={(e) => update(i, { endDate: e.target.value })} />
+            <InputField label="Start date" placeholder="YYYY-MM" value={entry.startDate} onChange={(e) => update(i, { startDate: e.target.value })} />
+            <InputField label="End date" placeholder="YYYY-MM" value={entry.endDate ?? ''} disabled={entry.current} onChange={(e) => update(i, { endDate: e.target.value })} />
           </div>
           <label className="flex items-center gap-2 text-sm">
             <input

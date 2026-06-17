@@ -4,7 +4,7 @@ import { SectionBody, getContact, visibleSections } from '../sections';
 function Block({ section }: { section: CVSectionData }) {
   return (
     <section aria-labelledby={`sec-${section.id}`}>
-      <h2 id={`sec-${section.id}`} className="mb-2 text-lg font-semibold text-brand-700">
+      <h2 id={`sec-${section.id}`} className="mb-2 text-lg font-semibold text-pine">
         {section.title}
       </h2>
       <SectionBody section={section} />
@@ -20,7 +20,7 @@ export function ModernTemplate({ cv }: TemplateProps) {
   return (
     <article className="mx-auto max-w-3xl bg-white p-10 text-gray-900">
       <header className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight text-brand-700">
+        <h1 className="text-4xl font-bold tracking-tight text-pine">
           {contact?.fullName || cv.title}
         </h1>
         {contact && (

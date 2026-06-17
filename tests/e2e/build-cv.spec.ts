@@ -22,7 +22,7 @@ test('build a CV end to end', async ({ page }) => {
   await page.getByRole('button', { name: 'Add experience' }).click();
   await page.getByLabel('Role').fill('Engineer');
   await page.getByLabel('Company').fill('Analytical Engine');
-  await page.getByLabel('Start (YYYY-MM)').fill('2020-01');
+  await page.getByLabel('Start date').fill('2020-01');
 
   // Live preview reflects the content (FR-004)
   await expect(page.getByText('Ada Lovelace')).toBeVisible();
@@ -34,9 +34,9 @@ test('build a CV end to end', async ({ page }) => {
   await expect(page.getByText(/Analytical Engine/)).toBeVisible();
 
   // Save
-  await page.getByRole('button', { name: 'Save' }).click();
+  await page.getByRole('button', { name: 'Save changes' }).click();
   // Generous timeout: on a cold dev server the PATCH routes compile on first hit.
-  await expect(page.getByText('All changes saved')).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText('Saved', { exact: true })).toBeVisible({ timeout: 20_000 });
 
   // Reload — content persists exactly (FR-006)
   await page.reload();

@@ -31,8 +31,8 @@ export function ExperienceEditor({
           <div className="grid gap-2 sm:grid-cols-2">
             <InputField label="Role" value={entry.role} onChange={(e) => update(i, { role: e.target.value })} />
             <InputField label="Company" value={entry.company} onChange={(e) => update(i, { company: e.target.value })} />
-            <InputField label="Start (YYYY-MM)" value={entry.startDate} onChange={(e) => update(i, { startDate: e.target.value })} />
-            <InputField label="End (YYYY-MM)" value={entry.endDate ?? ''} disabled={entry.current} onChange={(e) => update(i, { endDate: e.target.value })} />
+            <InputField label="Start date" placeholder="YYYY-MM" value={entry.startDate} onChange={(e) => update(i, { startDate: e.target.value })} />
+            <InputField label="End date" placeholder="YYYY-MM" value={entry.endDate ?? ''} disabled={entry.current} onChange={(e) => update(i, { endDate: e.target.value })} />
           </div>
           <label className="flex items-center gap-2 text-sm">
             <input

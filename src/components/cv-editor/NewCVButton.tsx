@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui';
 
-export function NewCVButton() {
+export function NewCVButton({ label = 'New CV' }: { label?: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +25,7 @@ export function NewCVButton() {
 
   return (
     <Button onClick={create} disabled={loading}>
-      {loading ? 'Creating…' : 'New CV'}
+      {loading ? 'Creating…' : label}
     </Button>
   );
 }
