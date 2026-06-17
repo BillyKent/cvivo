@@ -1,5 +1,6 @@
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-specs/001-cvivo-cv-platform/plan.md
+specs/002-usability-improvements/plan.md
+(foundational stack/architecture: specs/001-cvivo-cv-platform/plan.md)
 <!-- SPECKIT END -->
