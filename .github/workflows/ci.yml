@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main, '0**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    name: Typecheck, test, build
+    runs-on: ubuntu-latest
+    # Placeholders so the build can inline NEXT_PUBLIC_* and Prisma can read a URL.
+    # No real database is contacted — DB-backed flows live in the E2E workflow.
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      DATABASE_URL: postgresql://user:pass@localhost:5432/db?pgbouncer=true
+      DIRECT_URL: postgresql://user:pass@localhost:5432/db
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm exec prisma generate
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Unit + accessibility tests
+        run: pnpm test
+
+      - name: Production build
+        run: pnpm build
