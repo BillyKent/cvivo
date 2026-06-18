@@ -1,9 +1,9 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getAuthUserId } from '@/lib/api';
 import { prisma } from '@/lib/db';
 import { serializeSummary } from '@/lib/cv';
 import { NewCVButton } from '@/components/cv-editor/NewCVButton';
+import { CVCard } from '@/components/dashboard/CVCard';
 
 export const dynamic = 'force-dynamic';
 
@@ -46,30 +46,7 @@ export default async function DashboardPage() {
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cvs.map((cv) => (
             <li key={cv.id}>
-              <Link
-                href={`/cv/${cv.id}/edit`}
-                className="group flex flex-col gap-3 rounded-xl border border-line bg-paper p-4 shadow-sm transition-shadow hover:shadow-raised"
-              >
-                <div className="rounded-lg border border-line bg-surface-raised p-3">
-                  <div className="h-1.5 w-1/2 rounded bg-line" />
-                  <div className="mt-2 h-1 w-3/4 rounded bg-line/70" />
-                  <div className="mt-1.5 h-1 w-2/3 rounded bg-line/70" />
-                  <div className="mt-1.5 h-1 w-1/2 rounded bg-line/70" />
-                </div>
-                <div className="flex items-start justify-between gap-2">
-                  <span className="font-medium text-ink group-hover:text-pine">{cv.title}</span>
-                  {cv.visibility === 'SHARED' ? (
-                    <span className="shrink-0 rounded-full bg-pine-tint px-2 py-0.5 text-[11px] font-medium text-pine">
-                      Shared
-                    </span>
-                  ) : (
-                    <span className="shrink-0 text-[11px] text-ink-muted">Private</span>
-                  )}
-                </div>
-                <span className="text-xs text-ink-muted">
-                  Edited {new Date(cv.updatedAt).toLocaleDateString()}
-                </span>
-              </Link>
+              <CVCard cv={cv} />
             </li>
           ))}
         </ul>

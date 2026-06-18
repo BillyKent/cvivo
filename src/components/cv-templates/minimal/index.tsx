@@ -1,5 +1,5 @@
 import type { CVSectionData, TemplateProps } from '@/types/cv';
-import { SectionBody, getContact, visibleSections } from '../sections';
+import { ContactLine, SectionBody, getContact, visibleSections } from '../sections';
 
 function Block({ section }: { section: CVSectionData }) {
   return (
@@ -18,12 +18,13 @@ function Block({ section }: { section: CVSectionData }) {
 /** Minimal: compact, text-forward layout that maximizes content density. */
 export function MinimalTemplate({ cv }: TemplateProps) {
   const contact = getContact(cv);
-  const sections = visibleSections(cv);
+  const sections = visibleSections(cv).filter((s) => s.type !== 'CONTACT');
 
   return (
     <article className="mx-auto max-w-3xl bg-white p-8 text-sm leading-relaxed text-gray-900">
       <header className="mb-5">
         <h1 className="text-2xl font-semibold">{contact?.fullName || cv.title}</h1>
+        <ContactLine contact={contact} />
       </header>
       <div className="space-y-4">
         {sections.map((section) => (

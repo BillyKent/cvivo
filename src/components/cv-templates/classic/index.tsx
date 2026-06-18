@@ -1,5 +1,5 @@
 import type { CVSectionData, TemplateProps } from '@/types/cv';
-import { SectionBody, getContact, visibleSections } from '../sections';
+import { ContactLine, SectionBody, getContact, visibleSections } from '../sections';
 
 function Block({ section }: { section: CVSectionData }) {
   return (
@@ -19,13 +19,14 @@ function Block({ section }: { section: CVSectionData }) {
 export function ClassicTemplate({ cv }: TemplateProps) {
   const contact = getContact(cv);
   const sections = visibleSections(cv);
-  const sidebar = sections.filter((s) => s.type === 'CONTACT' || s.type === 'SKILLS');
+  const sidebar = sections.filter((s) => s.type === 'SKILLS');
   const main = sections.filter((s) => s.type !== 'CONTACT' && s.type !== 'SKILLS');
 
   return (
     <article className="mx-auto max-w-4xl bg-white p-10 font-serif text-gray-900">
       <header className="border-b-2 border-gray-800 pb-4">
         <h1 className="text-3xl font-bold">{contact?.fullName || cv.title}</h1>
+        <ContactLine contact={contact} />
       </header>
       <div className="mt-6 grid gap-8 md:grid-cols-3">
         <aside className="space-y-6 md:col-span-1">

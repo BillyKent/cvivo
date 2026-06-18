@@ -29,7 +29,7 @@ description: "Task list for CV Editor & App Usability Improvements"
 
 **Purpose**: Shared feedback infrastructure used by multiple stories
 
-- [ ] T002 Implement `ToastProvider` + `useToast` hook + accessible `Toast` UI (ARIA live region) in `src/components/ui/Toast.tsx`, export from `src/components/ui/index.ts`, and mount the provider in `src/app/(dashboard)/layout.tsx`
+- [X] T002 Implement `ToastProvider` + `useToast` hook + accessible `Toast` UI (ARIA live region) in `src/components/ui/Toast.tsx`, export from `src/components/ui/index.ts`, and mount the provider in `src/app/(dashboard)/layout.tsx`
 
 **Checkpoint**: In-app notifications available to the editor and dashboard.
 
@@ -85,15 +85,15 @@ description: "Task list for CV Editor & App Usability Improvements"
 
 ### Tests for User Story 3 (write first, must fail) ⚠️
 
-- [ ] T013 [P] [US3] E2E: reorder (Contact stays first), remove + re-add a section, add a custom section; structure/order persist on reload — `tests/e2e/section-management.spec.ts`
-- [ ] T014 [P] [US3] E2E: rename a CV and delete a CV (with confirmation) from the dashboard — `tests/e2e/dashboard-actions.spec.ts`
+- [X] T013 [P] [US3] E2E: reorder (Contact stays first), remove + re-add a section, add a custom section; structure/order persist on reload — `tests/e2e/section-management.spec.ts`
+- [X] T014 [P] [US3] E2E: rename a CV and delete a CV (with confirmation) from the dashboard — `tests/e2e/dashboard-actions.spec.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T015 [P] [US3] Create `src/components/cv-editor/SectionManager.tsx` — move up/down (Contact pinned first, not movable/removable), remove (Summary/Experience/Education/Skills), and add section incl. custom (free title + text)
-- [ ] T016 [US3] Integrate SectionManager into `src/components/cv-editor/CVEditor.tsx`; reflect order/structure in the preview; persist structural changes immediately via existing section create/delete/order endpoints
-- [ ] T017 [P] [US3] Create `src/components/dashboard/CVCard.tsx` with rename (PATCH title) and delete (confirm → DELETE) actions, using toasts for feedback
-- [ ] T018 [US3] Use `CVCard` in `src/app/(dashboard)/dashboard/page.tsx`
+- [X] T015 [P] [US3] Create `src/components/cv-editor/SectionManager.tsx` — move up/down (Contact pinned first, not movable/removable), remove (Summary/Experience/Education/Skills), and add section incl. custom (free title + text)
+- [X] T016 [US3] Integrate SectionManager into `src/components/cv-editor/CVEditor.tsx`; reflect order/structure in the preview; persist structural changes immediately via existing section create/delete/order endpoints
+- [X] T017 [P] [US3] Create `src/components/dashboard/CVCard.tsx` with rename (PATCH title) and delete (confirm → DELETE) actions, using toasts for feedback
+- [X] T018 [US3] Use `CVCard` in `src/app/(dashboard)/dashboard/page.tsx`
 
 **Checkpoint**: Users control their CV structure and document list from the UI.
 
@@ -107,13 +107,13 @@ description: "Task list for CV Editor & App Usability Improvements"
 
 ### Tests for User Story 4 (write first, must fail) ⚠️
 
-- [ ] T019 [P] [US4] E2E: export failure surfaces an in-app toast (no native dialog); navigating away with unsaved staged edits triggers a warning — `tests/e2e/feedback.spec.ts`
+- [X] T019 [P] [US4] E2E: export failure surfaces an in-app toast (no native dialog); navigating away with unsaved staged edits triggers a warning — `tests/e2e/feedback.spec.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T020 [US4] Replace the `alert()` in `src/components/cv-editor/ExportButton.tsx` with a toast error + retry affordance
-- [ ] T021 [US4] Add success toasts for **publish** and **copy-link** in `src/components/cv-editor/SharePanel.tsx`. Do NOT add a toast for save — save keeps its single inline "Saved" indicator (`SaveState`) to avoid a double success signal (analyze D1; honors FR-004)
-- [ ] T022 [US4] Add an unsaved-changes guard in `src/components/cv-editor/CVEditor.tsx` (beforeunload when staged content is dirty + confirm on the in-app "CVs" back link and Sign out)
+- [X] T020 [US4] Replace the `alert()` in `src/components/cv-editor/ExportButton.tsx` with a toast error + retry affordance
+- [X] T021 [US4] Add success toasts for **publish** and **copy-link** in `src/components/cv-editor/SharePanel.tsx`. Do NOT add a toast for save — save keeps its single inline "Saved" indicator (`SaveState`) to avoid a double success signal (analyze D1; honors FR-004)
+- [X] T022 [US4] Add an unsaved-changes guard in `src/components/cv-editor/CVEditor.tsx` (beforeunload when staged content is dirty + confirm on the in-app "CVs" back link and Sign out)
 
 **Checkpoint**: Feedback is consistent and on-brand; work isn't lost silently.
 
@@ -121,12 +121,12 @@ description: "Task list for CV Editor & App Usability Improvements"
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T023 [P] Fix Contact rendering (FR-013) in `src/components/cv-templates/sections.tsx` and the three templates so a Contact section never shows as a titled section with an empty body — render contact as the header block in all templates
-- [ ] T024 Re-baseline the visual-regression snapshots after the Contact fix — `pnpm exec playwright test tests/e2e/visual-regression.spec.ts --project=desktop --update-snapshots`
-- [ ] T025 [P] Plain-language copy pass (FR-014): ensure no internal error codes surface to users and tone is consistent across editor, auth, and share
-- [ ] T026 [P] Accessibility check (jest-axe + keyboard) for the new components — skills chip input, toasts, section manager
-- [ ] T027 Update the existing build-cv E2E if labels/flows changed, then run the full suite green — `pnpm test` and `pnpm exec playwright test --project=desktop`
-- [ ] T028 [P] Handle a missing CV gracefully — when the open CV returns HTTP 404 (e.g. deleted in another tab) during save or a structural op, show a clear in-app message and return to the dashboard rather than a generic error, in `src/components/cv-editor/CVEditor.tsx` (spec edge case; analyze G1). Add an E2E covering it in `tests/e2e/feedback.spec.ts`
+- [X] T023 [P] Fix Contact rendering (FR-013) in `src/components/cv-templates/sections.tsx` and the three templates so a Contact section never shows as a titled section with an empty body — render contact as the header block in all templates
+- [X] T024 Re-baseline the visual-regression snapshots after the Contact fix — `pnpm exec playwright test tests/e2e/visual-regression.spec.ts --project=desktop --update-snapshots`
+- [X] T025 [P] Plain-language copy pass (FR-014): ensure no internal error codes surface to users and tone is consistent across editor, auth, and share
+- [X] T026 [P] Accessibility check (jest-axe + keyboard) for the new components — skills chip input, toasts, section manager
+- [X] T027 Update the existing build-cv E2E if labels/flows changed, then run the full suite green — `pnpm test` and `pnpm exec playwright test --project=desktop`
+- [X] T028 [P] Handle a missing CV gracefully — when the open CV returns HTTP 404 (e.g. deleted in another tab) during save or a structural op, show a clear in-app message and return to the dashboard rather than a generic error, in `src/components/cv-editor/CVEditor.tsx` (spec edge case; analyze G1). Add an E2E covering it in `tests/e2e/feedback.spec.ts`
 
 ---
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Alert, Button, InputField } from '@/components/ui';
+import { Alert, Button, InputField, useToast } from '@/components/ui';
 import { validateSlug } from '@/lib/slug';
 
 type ShareStatus = 'NONE' | 'ACTIVE' | 'REVOKED';
@@ -16,6 +16,7 @@ export function SharePanel({ cvId, onClose }: { cvId: string; onClose: () => voi
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -52,6 +53,7 @@ export function SharePanel({ cvId, onClose }: { cvId: string; onClose: () => voi
     if (res.ok) {
       setStatus('ACTIVE');
       setUrl(data.url);
+      toast.success('Your CV is now shared.');
     } else if (res.status === 409) {
       setError('That link is already taken. Try another.');
     } else {
@@ -71,6 +73,7 @@ export function SharePanel({ cvId, onClose }: { cvId: string; onClose: () => voi
     if (!url) return;
     await navigator.clipboard.writeText(url);
     setCopied(true);
+    toast.success('Link copied.');
     setTimeout(() => setCopied(false), 1500);
   }
 

@@ -14,6 +14,21 @@ export function getContact(cv: CVData): ContactContent | undefined {
   return section?.type === 'CONTACT' ? section.content : undefined;
 }
 
+/** Contact details as a single line under the name. Renders nothing when there are none, so a
+ *  Contact section never appears as an empty titled block (FR-013). */
+export function ContactLine({ contact }: { contact?: ContactContent }) {
+  if (!contact) return null;
+  const items = [
+    contact.email,
+    contact.phone,
+    contact.location,
+    contact.website,
+    contact.linkedin,
+  ].filter(Boolean);
+  if (items.length === 0) return null;
+  return <p className="mt-1 text-sm text-gray-600">{items.join('  ·  ')}</p>;
+}
+
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export function formatMonth(value?: string): string {

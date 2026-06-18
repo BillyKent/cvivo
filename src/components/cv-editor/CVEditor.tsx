@@ -1,18 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { CVData, CVSectionData, TemplateId } from '@/types/cv';
+import { useRouter } from 'next/navigation';
+import type { CVData, CVSectionData, CVSectionType, TemplateId } from '@/types/cv';
 import { templateMeta } from '@/components/cv-templates/registry';
 import { CVPreview } from '@/components/cv-preview/CVPreview';
-import { Button, CheckIcon, AlertIcon } from '@/components/ui';
+import { Button, CheckIcon, AlertIcon, useToast } from '@/components/ui';
 import {
   isSectionEmpty,
   validateCVForSave,
   pruneEmptyEntries,
+  defaultContentFor,
   type SectionErrors,
 } from '@/lib/validation';
 import { SectionEditor } from './SectionEditor';
+import { SectionManager } from './SectionManager';
 import { SharePanel } from './SharePanel';
 import { ExportButton } from './ExportButton';
 
@@ -86,8 +89,22 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
   const [errors, setErrors] = useState<SectionErrors>({});
   const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit');
   const [shareOpen, setShareOpen] = useState(false);
+  const toast = useToast();
+  const router = useRouter();
 
   const cv: CVData = { ...initialCV, title, templateId, sections };
+  const dirty = status === 'dirty' || status === 'invalid';
+
+  // Warn before losing unsaved staged edits on tab close/refresh (FR-011).
+  useEffect(() => {
+    if (!dirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [dirty]);
 
   function touch() {
     setStatus((s) => (s === 'saving' ? s : 'dirty'));
@@ -105,6 +122,48 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
       return next;
     });
     touch();
+  }
+
+  // Structural section ops persist immediately (research Decision 6).
+  async function addSection(type: CVSectionType, title: string) {
+    const res = await fetch(`/api/cvs/${initialCV.id}/sections`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, title, content: defaultContentFor(type) }),
+    });
+    if (res.ok) {
+      const created = (await res.json()) as CVSectionData;
+      setSections((prev) => [...prev, created]);
+      toast.success(`${title} section added.`);
+    } else {
+      toast.error('Couldn’t add the section.');
+    }
+  }
+
+  async function removeSection(sectionId: string) {
+    const previous = sections;
+    setSections((p) => p.filter((s) => s.id !== sectionId));
+    const res = await fetch(`/api/cvs/${initialCV.id}/sections/${sectionId}`, { method: 'DELETE' });
+    if (res.ok) {
+      toast.success('Section removed.');
+    } else {
+      setSections(previous);
+      toast.error('Couldn’t remove the section.');
+    }
+  }
+
+  async function moveSection(index: number, dir: -1 | 1) {
+    const target = index + dir;
+    // Contact is pinned first: never move index 0, and never move into slot 0.
+    if (index <= 0 || target <= 0 || target >= sections.length) return;
+    const next = [...sections];
+    [next[index], next[target]] = [next[target], next[index]];
+    setSections(next);
+    await fetch(`/api/cvs/${initialCV.id}/sections/order`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sectionIds: next.map((s) => s.id) }),
+    });
   }
 
   /** Validate on the client first (US1); only then persist. Returns whether the save succeeded. */
@@ -125,6 +184,12 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, templateId }),
       });
+      if (meta.status === 404) {
+        // The CV was deleted elsewhere (e.g. another tab) — guide the user, don't show a raw error.
+        toast.error('This CV no longer exists — it may have been deleted.');
+        router.push('/dashboard');
+        return false;
+      }
       if (!meta.ok) throw new Error('meta');
 
       const results = await Promise.all(
@@ -153,6 +218,11 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
         <Link
           href="/dashboard"
           aria-label="Back to your CVs"
+          onClick={(e) => {
+            if (dirty && !window.confirm('You have unsaved changes. Leave without saving?')) {
+              e.preventDefault();
+            }
+          }}
           className="flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-sm text-ink-muted transition-colors hover:bg-surface hover:text-ink"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -248,13 +318,43 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
                     className="animate-rise"
                     style={{ animationDelay: `${Math.min(i, 6) * 40}ms` }}
                   >
-                    <header className="mb-3 flex items-baseline justify-between gap-2 border-b border-line pb-2">
+                    <header className="mb-3 flex items-center justify-between gap-2 border-b border-line pb-2">
                       <h2 className="font-display text-lg font-medium text-ink">{section.title}</h2>
-                      {empty && (
-                        <span className="shrink-0 text-[11px] text-ink-muted">
-                          Hidden until you add content
-                        </span>
-                      )}
+                      <div className="flex items-center gap-1">
+                        {empty && (
+                          <span className="mr-1 text-[11px] text-ink-muted">Hidden until filled</span>
+                        )}
+                        {section.type !== 'CONTACT' && (
+                          <>
+                            <button
+                              type="button"
+                              aria-label={`Move ${section.title} up`}
+                              disabled={i <= 1}
+                              onClick={() => moveSection(i, -1)}
+                              className="rounded px-1.5 py-0.5 text-ink-muted hover:bg-surface hover:text-ink disabled:opacity-30"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Move ${section.title} down`}
+                              disabled={i === sections.length - 1}
+                              onClick={() => moveSection(i, 1)}
+                              className="rounded px-1.5 py-0.5 text-ink-muted hover:bg-surface hover:text-ink disabled:opacity-30"
+                            >
+                              ↓
+                            </button>
+                            <button
+                              type="button"
+                              aria-label={`Remove ${section.title} section`}
+                              onClick={() => removeSection(section.id)}
+                              className="rounded px-1.5 py-0.5 text-xs font-medium text-clay hover:bg-clay-tint"
+                            >
+                              Remove
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </header>
                     <SectionEditor
                       section={section}
@@ -264,6 +364,11 @@ export function CVEditor({ initialCV }: { initialCV: CVData }) {
                   </section>
                 );
               })}
+
+              <SectionManager
+                existingTypes={sections.map((s) => s.type)}
+                onAdd={addSection}
+              />
             </div>
           </div>
         </div>

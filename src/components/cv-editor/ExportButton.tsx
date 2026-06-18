@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui';
+import { Button, useToast } from '@/components/ui';
 
 /** Export-to-PDF action. Runs onBeforeExport (a save) first so the file matches what you see. */
 export function ExportButton({
@@ -12,6 +12,7 @@ export function ExportButton({
   onBeforeExport?: () => Promise<boolean>;
 }) {
   const [busy, setBusy] = useState(false);
+  const toast = useToast();
 
   async function exportPdf() {
     setBusy(true);
@@ -33,8 +34,7 @@ export function ExportButton({
       link.remove();
       URL.revokeObjectURL(url);
     } catch {
-      // Surfaced minimally; a full toast system is a polish-phase concern.
-      alert('We couldn’t generate the PDF. Please try again.');
+      toast.error('We couldn’t generate the PDF. Please try again.');
     } finally {
       setBusy(false);
     }
